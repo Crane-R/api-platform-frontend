@@ -20,7 +20,8 @@ import { createStyles } from 'antd-style';
 import React, { useState } from 'react';
 import { flushSync } from 'react-dom';
 import Settings from '../../../../config/defaultSettings';
-import {userLogin} from "@/services/swagger/userController";
+import { userLogin } from '@/services/swagger/userController';
+
 const useStyles = createStyles(({ token }) => {
   return {
     action: {
@@ -82,43 +83,28 @@ const LoginMessage: React.FC<{
 };
 const Login: React.FC = () => {
   const [userLoginState, setUserLoginState] = useState<API.LoginResult>({});
-  const [type, setType] = useState<string>('account');
+  const [type] = useState<string>('account');
   const { initialState, setInitialState } = useModel('@@initialState');
   const { styles } = useStyles();
-  const fetchUserInfo = async () => {
-    const userInfo = await initialState?.fetchUserInfo?.();
-    if (userInfo) {
-      flushSync(() => {
-        setInitialState((s) => ({
-          ...s,
-          currentUser: userInfo,
-        }));
-      });
-    }
-  };
   const handleSubmit = async (values: API.LoginParams) => {
     try {
       // 登录
       const res = await userLogin(values as API.userLoginParams);
-      if (res.code === 20000) {
+      if (res.data) {
         const defaultLoginSuccessMessage = '登录成功！';
         message.success(defaultLoginSuccessMessage);
-        await fetchUserInfo();
         const urlParams = new URL(window.location.href).searchParams;
         history.push(urlParams.get('redirect') || '/');
+        setInitialState({ loginUser: res.data });
         return;
       }
-      console.log(res);
-      // 如果失败去设置用户错误信息
-      // @ts-ignore
-      setUserLoginState(res.data);
     } catch (error) {
       const defaultLoginFailureMessage = '登录失败，请重试！';
       console.log(error);
       message.error(defaultLoginFailureMessage);
     }
   };
-  const {data: loginType } = userLoginState;
+  const { data: loginType } = userLoginState;
   return (
     <div className={styles.container}>
       <Helmet>
@@ -138,32 +124,15 @@ const Login: React.FC = () => {
             maxWidth: '75vw',
           }}
           logo={<img alt="logo" src="/logo.svg" />}
-          title="Ant Design"
-          subTitle={'Ant Design 是西湖区最具影响力的 Web 设计规范'}
+          title="API接口开放平台"
+          subTitle={'提供接口在线调用的平台'}
           initialValues={{
             autoLogin: true,
           }}
-          actions={['其他登录方式 :', <ActionIcons key="icons" />]}
           onFinish={async (values) => {
             await handleSubmit(values as API.LoginParams);
           }}
         >
-          <Tabs
-            activeKey={type}
-            onChange={setType}
-            centered
-            items={[
-              {
-                key: 'account',
-                label: '账户密码登录',
-              },
-              {
-                key: 'mobile',
-                label: '手机号登录',
-              },
-            ]}
-          />
-
           {status === 'error' && loginType === 'account' && (
             <LoginMessage content={'错误的用户名和密码(admin/ant.design)'} />
           )}

@@ -138,7 +138,7 @@ export default defineConfig({
   openAPI: [
     {
       requestLibPath: "import { request } from '@umijs/max'",
-      schemaPath: 'http://localhost:8080/v3/api-docs',
+      schemaPath: 'http://localhost:8080/api/v3/api-docs',
       projectName: 'swagger',
     },
   ],
