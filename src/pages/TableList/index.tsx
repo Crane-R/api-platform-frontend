@@ -17,15 +17,16 @@ import type { FormValueType } from './components/UpdateForm';
 import UpdateForm from './components/UpdateForm';
 import {
   interfaceAdd,
-  interfaceDelete,
+  interfaceDelete, interfaceOffline,
+  interfaceOnLine,
   interfacePage,
   interfaceUpdate,
 } from '@/services/swagger/interfaceInfoController';
 import CreateModal from '@/pages/TableList/components/CreateModal';
 import UpdateModal from '@/pages/TableList/components/UpdateModal';
-import {any} from "prop-types";
-import required from "@rc-component/async-validator/es/rule/required";
-import {rules} from "@typescript-eslint/eslint-plugin";
+import { any } from 'prop-types';
+import required from '@rc-component/async-validator/es/rule/required';
+import { rules } from '@typescript-eslint/eslint-plugin';
 
 const TableList: React.FC = () => {
   /**
@@ -72,7 +73,7 @@ const TableList: React.FC = () => {
    * @param fields
    */
   const handleUpdate = async (fields: API.InterfaceInfoVo) => {
-    console.log(fields+'sssssssssssssss')
+    console.log(fields + 'sssssssssssssss');
     const hide = message.loading('Configuring');
     try {
       await interfaceUpdate({
@@ -103,11 +104,45 @@ const TableList: React.FC = () => {
       } as API.interfaceDeleteParams);
       hide();
       message.success('删除成功');
-      actionRef.current?.reload()
+      actionRef.current?.reload();
       return true;
     } catch (error) {
       hide();
       message.error('删除失败');
+      return false;
+    }
+  };
+
+  const handleOnline = async (id: number) => {
+    const hide = message.loading('发布中');
+    try {
+      await interfaceOnLine({
+        interfaceId: id,
+      });
+      hide();
+      message.success('操作成功');
+      actionRef.current?.reload();
+      return true;
+    } catch (error) {
+      hide();
+      message.error('操作失败');
+      return false;
+    }
+  };
+
+  const handleOffline = async (id: number) => {
+    const hide = message.loading('下线中');
+    try {
+      await interfaceOffline({
+        interfaceId: id,
+      });
+      hide();
+      message.success('操作成功');
+      actionRef.current?.reload();
+      return true;
+    } catch (error) {
+      hide();
+      message.error('操作失败');
       return false;
     }
   };
@@ -132,25 +167,30 @@ const TableList: React.FC = () => {
           </a>
         );
       },
-      formItemProps:{
-        rules:[{
-          required:true
-        }]
-      }
+      formItemProps: {
+        rules: [
+          {
+            required: true,
+          },
+        ],
+      },
     },
     {
       title: '描述',
       dataIndex: 'description',
       valueType: 'textarea',
-      formItemProps:{
-        rules:[{
-          required:true
-        }]
-      }
+      formItemProps: {
+        rules: [
+          {
+            required: true,
+          },
+        ],
+      },
     },
     {
       title: 'id',
       dataIndex: 'id',
+      valueType: 'number',
       // renderText: (val: string) => `${val}${'万'}`,
     },
     {
@@ -166,31 +206,37 @@ const TableList: React.FC = () => {
           status: 'Default',
         },
       },
-      formItemProps:{
-        rules:[{
-          required:true
-        }]
-      }
+      formItemProps: {
+        rules: [
+          {
+            required: true,
+          },
+        ],
+      },
     },
     {
       title: '请求头',
       dataIndex: 'requestHeader',
       valueType: 'textarea',
-      formItemProps:{
-        rules:[{
-          required:true
-        }]
-      }
+      formItemProps: {
+        rules: [
+          {
+            required: true,
+          },
+        ],
+      },
     },
     {
       title: '响应头',
       dataIndex: 'responseHeader',
       valueType: 'textarea',
-      formItemProps:{
-        rules:[{
-          required:true
-        }]
-      }
+      formItemProps: {
+        rules: [
+          {
+            required: true,
+          },
+        ],
+      },
     },
     {
       title: '状态',
@@ -216,7 +262,33 @@ const TableList: React.FC = () => {
       dataIndex: 'option',
       valueType: 'option',
       render: (_, record) => [
-        <a
+        record.status === 0 ? (
+          <Button
+            type="text"
+            color="blue"
+            key="online"
+            onClick={() => {
+              handleOnline(record.id);
+            }}
+          >
+            发布
+          </Button>
+        ) : null,
+        record.status === 1 ? (
+          <Button
+            key="offline"
+            type="text"
+            danger={true}
+            onClick={() => {
+              handleOffline(record.id);
+            }}
+          >
+            下线
+          </Button>
+        ) : null,
+
+        <Button
+          type="text"
           key="update"
           onClick={() => {
             handleUpdateModalOpen(true);
@@ -224,15 +296,17 @@ const TableList: React.FC = () => {
           }}
         >
           修改
-        </a>,
-        <a
+        </Button>,
+        <Button
+          danger={true}
           key="delete"
+          type="text"
           onClick={() => {
-           const res = handleRemove(record);
+            const res = handleRemove(record);
           }}
         >
           删除
-        </a>,
+        </Button>,
       ],
     },
   ];
@@ -258,7 +332,7 @@ const TableList: React.FC = () => {
             <PlusOutlined /> 新建
           </Button>,
         ]}
-        request={async (params: API.interfacePageParams,sort) => {
+        request={async (params: API.interfacePageParams, sort) => {
           const res = await interfacePage({
             ...params,
           });
