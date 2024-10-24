@@ -6,9 +6,23 @@ declare namespace API {
     description?: string;
   };
 
+  type GeneralResponseInterfaceInfoVo = {
+    code?: number;
+    data?: InterfaceInfoVo;
+    msg?: string;
+    description?: string;
+  };
+
   type GeneralResponseListInterfaceInfoVo = {
     code?: number;
     data?: InterfaceInfoVo[];
+    msg?: string;
+    description?: string;
+  };
+
+  type GeneralResponseListUserInterfaceInfoVo = {
+    code?: number;
+    data?: UserInterfaceInfoVo[];
     msg?: string;
     description?: string;
   };
@@ -27,11 +41,29 @@ declare namespace API {
     description?: string;
   };
 
+  type GeneralResponseString = {
+    code?: number;
+    data?: string;
+    msg?: string;
+    description?: string;
+  };
+
+  type GeneralResponseUserInterfaceInfoVo = {
+    code?: number;
+    data?: UserInterfaceInfoVo;
+    msg?: string;
+    description?: string;
+  };
+
   type GeneralResponseUserVo = {
     code?: number;
     data?: UserVo;
     msg?: string;
     description?: string;
+  };
+
+  type interfaceAddBatchParams = {
+    count: number;
   };
 
   type InterfaceAddRequest = {
@@ -40,6 +72,7 @@ declare namespace API {
     method?: number;
     requestHeader?: string;
     responseHeader?: string;
+    requestParams?: string;
   };
 
   type interfaceDeleteParams = {
@@ -53,12 +86,20 @@ declare namespace API {
     method?: number;
     requestHeader?: string;
     responseHeader?: string;
+    requestParams?: string;
     status?: number;
     createTime?: string;
   };
 
   type InterfaceInvokeRequest = {
+    interfaceId?: number;
     url?: string;
+    requestParams?: string;
+  };
+
+  type interfaceIsExistParams = {
+    url: string;
+    method: number;
   };
 
   type interfaceOfflineParams = {
@@ -71,7 +112,11 @@ declare namespace API {
 
   type interfacePageParams = {
     pageSize: number;
-    pageNum: number;
+    current: number;
+  };
+
+  type interfaceSelectOneParams = {
+    interfaceId: number;
   };
 
   type InterfaceSelectRequest = {
@@ -103,12 +148,42 @@ declare namespace API {
     param: string;
   };
 
+  type SignDto = {
+    accessKey?: string;
+    timestamp?: number;
+    nonce?: string;
+    data?: Record<string, any>;
+  };
+
   type UserAddRequest = {
     username?: string;
     nickname?: string;
     password?: string;
     checkPassword?: string;
     userRole?: number;
+  };
+
+  type userInterfaceInfoAddParams = {
+    interfaceInfoId: number;
+  };
+
+  type userInterfaceInfoDeleteParams = {
+    id: number;
+  };
+
+  type userInterfaceInfoUpdateParams = {
+    userInterfaceInfoVo: UserInterfaceInfoVo;
+  };
+
+  type UserInterfaceInfoVo = {
+    id?: number;
+    userId?: number;
+    interfaceId?: number;
+    totalNum?: number;
+    leftNum?: number;
+    status?: number;
+    createTime?: string;
+    updateTime?: string;
   };
 
   type userLoginParams = {

@@ -24,3 +24,11 @@ export async function test(options?: { [key: string]: any }) {
     ...(options || {}),
   });
 }
+
+/** 此处后端没有提供注释 GET /test1 */
+export async function test1(options?: { [key: string]: any }) {
+  return request<string>('/test1', {
+    method: 'GET',
+    ...(options || {}),
+  });
+}

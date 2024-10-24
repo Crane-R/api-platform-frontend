@@ -17,6 +17,21 @@ export async function interfaceAdd(
   });
 }
 
+/** 此处后端没有提供注释 POST /interface/addBatch */
+export async function interfaceAddBatch(
+  // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)
+  params: API.interfaceAddBatchParams,
+  options?: { [key: string]: any },
+) {
+  return request<API.GeneralResponseListInterfaceInfoVo>('/interface/addBatch', {
+    method: 'POST',
+    params: {
+      ...params,
+    },
+    ...(options || {}),
+  });
+}
+
 /** 此处后端没有提供注释 POST /interface/delete */
 export async function interfaceDelete(
   // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)
@@ -24,6 +39,21 @@ export async function interfaceDelete(
   options?: { [key: string]: any },
 ) {
   return request<API.GeneralResponseBoolean>('/interface/delete', {
+    method: 'POST',
+    params: {
+      ...params,
+    },
+    ...(options || {}),
+  });
+}
+
+/** 此处后端没有提供注释 POST /interface/interfaceIsExistByInt */
+export async function interfaceIsExist(
+  // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)
+  params: API.interfaceIsExistParams,
+  options?: { [key: string]: any },
+) {
+  return request<API.GeneralResponseBoolean>('/interface/interfaceIsExistByInt', {
     method: 'POST',
     params: {
       ...params,
@@ -100,6 +130,21 @@ export async function interfacePage(
 ) {
   return request<API.GeneralResponsePageInterfaceInfoVo>('/interface/page', {
     method: 'POST',
+    params: {
+      ...params,
+    },
+    ...(options || {}),
+  });
+}
+
+/** 此处后端没有提供注释 GET /interface/selectOne */
+export async function interfaceSelectOne(
+  // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)
+  params: API.interfaceSelectOneParams,
+  options?: { [key: string]: any },
+) {
+  return request<API.GeneralResponseInterfaceInfoVo>('/interface/selectOne', {
+    method: 'GET',
     params: {
       ...params,
     },

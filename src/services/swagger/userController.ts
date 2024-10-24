@@ -22,6 +22,18 @@ export async function userCurrent(options?: { [key: string]: any }) {
   });
 }
 
+/** 此处后端没有提供注释 POST /user/getSign */
+export async function getSign(body: API.SignDto, options?: { [key: string]: any }) {
+  return request<API.GeneralResponseString>('/user/getSign', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: body,
+    ...(options || {}),
+  });
+}
+
 /** 此处后端没有提供注释 POST /user/login */
 export async function userLogin(
   // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)
@@ -33,6 +45,14 @@ export async function userLogin(
     params: {
       ...params,
     },
+    ...(options || {}),
+  });
+}
+
+/** 此处后端没有提供注释 GET /user/userAk */
+export async function userAccessKey(options?: { [key: string]: any }) {
+  return request<API.GeneralResponseString>('/user/userAk', {
+    method: 'GET',
     ...(options || {}),
   });
 }

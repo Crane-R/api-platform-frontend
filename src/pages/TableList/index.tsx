@@ -24,9 +24,6 @@ import {
 } from '@/services/swagger/interfaceInfoController';
 import CreateModal from '@/pages/TableList/components/CreateModal';
 import UpdateModal from '@/pages/TableList/components/UpdateModal';
-import { any } from 'prop-types';
-import required from '@rc-component/async-validator/es/rule/required';
-import { rules } from '@typescript-eslint/eslint-plugin';
 
 const TableList: React.FC = () => {
   /**
@@ -41,8 +38,8 @@ const TableList: React.FC = () => {
   const [updateModalOpen, handleUpdateModalOpen] = useState<boolean>(false);
   const [showDetail, setShowDetail] = useState<boolean>(false);
   const actionRef = useRef<ActionType>();
-  const [currentRow, setCurrentRow] = useState<API.RuleListItem>();
-  const [selectedRowsState, setSelectedRows] = useState<API.RuleListItem[]>([]);
+  const [currentRow, setCurrentRow] = useState<API.InterfaceInfoVo>();
+  const [selectedRowsState, setSelectedRows] = useState<API.InterfaceInfoVo[]>([]);
 
   /**
    * @en-US Add node
@@ -73,10 +70,13 @@ const TableList: React.FC = () => {
    * @param fields
    */
   const handleUpdate = async (fields: API.InterfaceInfoVo) => {
-    console.log(fields + 'sssssssssssssss');
+    if(!currentRow){
+      return
+    }
     const hide = message.loading('Configuring');
     try {
       await interfaceUpdate({
+        id:currentRow.id,
         ...fields,
       });
       hide();
@@ -191,6 +191,7 @@ const TableList: React.FC = () => {
       title: 'id',
       dataIndex: 'id',
       valueType: 'number',
+      hideInForm:true
       // renderText: (val: string) => `${val}${'万'}`,
     },
     {
@@ -215,9 +216,21 @@ const TableList: React.FC = () => {
       },
     },
     {
+      title: '请求参数',
+      dataIndex: 'requestParams',
+      valueType: 'jsonCode',
+      formItemProps: {
+        rules: [
+          {
+            required: true,
+          },
+        ],
+      },
+    },
+    {
       title: '请求头',
       dataIndex: 'requestHeader',
-      valueType: 'textarea',
+      valueType: 'jsonCode',
       formItemProps: {
         rules: [
           {
@@ -229,7 +242,7 @@ const TableList: React.FC = () => {
     {
       title: '响应头',
       dataIndex: 'responseHeader',
-      valueType: 'textarea',
+      valueType: 'jsonCode',
       formItemProps: {
         rules: [
           {
@@ -241,6 +254,7 @@ const TableList: React.FC = () => {
     {
       title: '状态',
       dataIndex: 'status',
+      hideInForm:true,
       valueEnum: {
         0: {
           text: '关闭',
@@ -256,6 +270,7 @@ const TableList: React.FC = () => {
       title: '创建日期',
       dataIndex: 'createTime',
       valueType: 'dateTime',
+      hideInForm:true,
     },
     {
       title: '操作',
@@ -271,7 +286,7 @@ const TableList: React.FC = () => {
               handleOnline(record.id);
             }}
           >
-            发布
+            上线
           </Button>
         ) : null,
         record.status === 1 ? (
