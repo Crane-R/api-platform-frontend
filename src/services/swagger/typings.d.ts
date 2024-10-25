@@ -13,6 +13,13 @@ declare namespace API {
     description?: string;
   };
 
+  type GeneralResponseInvokeResponse = {
+    code?: number;
+    data?: InvokeResponse;
+    msg?: string;
+    description?: string;
+  };
+
   type GeneralResponseListInterfaceInfoVo = {
     code?: number;
     data?: InterfaceInfoVo[];
@@ -23,13 +30,6 @@ declare namespace API {
   type GeneralResponseListUserInterfaceInfoVo = {
     code?: number;
     data?: UserInterfaceInfoVo[];
-    msg?: string;
-    description?: string;
-  };
-
-  type GeneralResponseObject = {
-    code?: number;
-    data?: Record<string, any>;
     msg?: string;
     description?: string;
   };
@@ -89,6 +89,7 @@ declare namespace API {
     requestParams?: string;
     status?: number;
     createTime?: string;
+    totalNum?: number;
   };
 
   type InterfaceInvokeRequest = {
@@ -122,6 +123,11 @@ declare namespace API {
   type InterfaceSelectRequest = {
     status?: number;
     name?: string;
+  };
+
+  type InvokeResponse = {
+    result?: string;
+    remainInvokeCount?: number;
   };
 
   type OrderItem = {

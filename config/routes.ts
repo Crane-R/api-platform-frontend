@@ -24,6 +24,7 @@ export default [
     ],
   },
   { name: '接口列表', icon: 'table', path: '/list', component: './TableList' },
+  { name: '接口分析', icon: 'analysis', path: '/interface_analysis', component: './InterfaceAnalysis' },
 
   { path: '*', layout: false, component: './404' },
 ];

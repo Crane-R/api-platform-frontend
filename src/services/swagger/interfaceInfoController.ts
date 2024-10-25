@@ -66,11 +66,20 @@ export async function interfaceIsExist(
 export async function interfaceInvoke(
   body: API.InterfaceInvokeRequest,
   options?: { [key: string]: any },
+  accessKey?: string,
+  timestamp?: number,
+  nonce?: string,
+  sign?:string
 ) {
-  return request<API.GeneralResponseObject>('/interface/invoke', {
+  return request<API.GeneralResponseInvokeResponse>('/interface/invoke', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
+      accessKey: accessKey,
+      body: JSON.stringify(body),
+      nonce: nonce,
+      timestamp: timestamp,
+      sign: sign
     },
     data: body,
     ...(options || {}),

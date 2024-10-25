@@ -6,9 +6,11 @@ import * as userInterfaceInfoController from './userInterfaceInfoController';
 import * as userController from './userController';
 import * as interfaceInfoController from './interfaceInfoController';
 import * as testController from './testController';
+import * as analysisController from './analysisController';
 export default {
   userInterfaceInfoController,
   userController,
   interfaceInfoController,
   testController,
+  analysisController,
 };

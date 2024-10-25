@@ -1,13 +1,16 @@
 import { PageContainer } from '@ant-design/pro-components';
 import React, { useEffect, useState } from 'react';
-import { Avatar, Button, Card, Descriptions, Divider, Form, List, message, Skeleton } from 'antd';
+import { Button, Card, Descriptions, Divider, Form, message } from 'antd';
 import {
   interfaceInvoke,
-  interfacePage,
   interfaceSelectOne,
 } from '@/services/swagger/interfaceInfoController';
 import { useParams } from '@@/exports';
 import TextArea from 'antd/es/input/TextArea';
+import { getInitialState } from '@/app';
+import { getSign } from '@/services/swagger/userController';
+
+
 
 /**
  * 主页
@@ -41,22 +44,45 @@ const Index: React.FC = () => {
   }, []);
 
   const onFinish = async (requestParams: object) => {
-    console.log(requestParams);
-
+    const currentUser = await getInitialState();
     if (!params.id) {
       message.error('参数不存在');
       return;
     }
     setInvokeLoading(true);
+
+    const timestamp = new Date().getTime();
     try {
-      const res = await interfaceInvoke({
+      const nonce = timestamp + Math.random().toString();
+      const body = {
         interfaceId: data?.id,
         url: data?.url,
         //无视这个错误
-        requestParams: requestParams.requestParams,
+        requestParams: encodeURIComponent(requestParams.requestParams),
+      };
+
+      const sign = await getSign({
+        accessKey: currentUser?.loginUser?.accessKey,
+        timestamp: timestamp,
+        nonce: nonce,
+        data: body,
       });
-      message.success('请求成功');
-      setInvokeRes(res.data);
+
+      const res = await interfaceInvoke(
+        {
+          interfaceId: data?.id,
+          url: data?.url,
+          //无视这个错误
+          requestParams: encodeURIComponent(requestParams.requestParams),
+        },
+        {},
+        currentUser?.loginUser?.accessKey,
+        timestamp,
+        nonce,
+        sign?.data,
+      );
+      message.success('请求成功，剩余调用次数：'+res.data.remainInvokeCount);
+      setInvokeRes(decodeURIComponent(res.data.result));
     } catch (error: any) {
       message.error('操作失败' + error.message);
     }

@@ -49,6 +49,14 @@ export async function userLogin(
   });
 }
 
+/** 此处后端没有提供注释 POST /user/logout */
+export async function logout(options?: { [key: string]: any }) {
+  return request<API.GeneralResponseBoolean>('/user/logout', {
+    method: 'POST',
+    ...(options || {}),
+  });
+}
+
 /** 此处后端没有提供注释 GET /user/userAk */
 export async function userAccessKey(options?: { [key: string]: any }) {
   return request<API.GeneralResponseString>('/user/userAk', {
